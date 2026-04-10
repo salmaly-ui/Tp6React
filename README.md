@@ -1,70 +1,162 @@
-# Getting Started with Create React App
+# ⚛️ TP React Hooks — Débutant
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Un projet pédagogique pour apprivoiser les hooks React les plus utiles :
+> `useReducer`, `useRef`, `useEffect` et les hooks personnalisés.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🎬 Démonstration vidéo
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+https://github.com/user-attachments/assets/aa36ae65-cade-4bb1-b2ba-89e05a5f45b1
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🧠 C'est quoi ce projet ?
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Ce TP a été réalisé dans le cadre d'un cours sur React. L'idée était simple : sortir de `useState` et explorer des hooks plus puissants pour gérer des cas concrets — un compteur avec logique métier, un focus automatique, un timer qui se nettoie proprement, et une vraie récupération de données depuis une API publique.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Chaque composant est volontairement petit et isolé pour que ce soit facile à lire, comprendre, et réutiliser.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 📁 Structure du projet
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+tp-hooks-perso/
+├── public/
+├── src/
+│   ├── App.js               ← Point d'entrée, assemble tous les composants
+│   ├── Compteur.js          ← useReducer : compteur avec +1 / −1 / reset
+│   ├── FocusInput.js        ← useRef : focus automatique sur un champ
+│   ├── CompteurRendu.js     ← useRef + useEffect : nombre de rendus affiché
+│   ├── useFetch.js          ← Hook personnalisé : récupération d'API propre
+│   ├── ListeArticles.js     ← Utilise useFetch pour afficher des articles
+│   └── Timer.js             ← useEffect avec nettoyage : timer pause/reset
+├── package.json
+└── README.md
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+##  Lancer le projet
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Prérequis
 
-## Learn More
+- [Node.js](https://nodejs.org/) version 16 ou supérieure
+- npm (inclus avec Node.js)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Installation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+# 1. Cloner le projet
+git clone https://github.com/ton-pseudo/tp-hooks-perso.git
+cd tp-hooks-perso
 
-### Code Splitting
+# 2. Installer les dépendances
+npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+# 3. Démarrer l'application
+npm start
+```
 
-### Analyzing the Bundle Size
+La page s'ouvre automatiquement sur **http://localhost:3000** 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 🔍 Ce qu'on apprend dans chaque composant
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+###  `Compteur.js` — `useReducer`
 
-### Advanced Configuration
+Au lieu d'utiliser `useState` pour chaque valeur, on centralise toute la logique dans une fonction `reducer`. C'est beaucoup plus propre dès qu'on a plusieurs actions possibles.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+Action "increment" → count + 1
+Action "decrement" → count − 1
+Action "reset"     → count = 0
+```
 
-### Deployment
+> 💡 Pense au reducer comme à un chef d'orchestre : il reçoit une demande et décide quoi faire, sans que le composant ait besoin de savoir comment.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+###  `FocusInput.js` — `useRef` (manipulation du DOM)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+`useRef` permet d'accéder directement à un élément HTML sans déclencher de re-render. Ici on l'utilise pour placer le curseur dans un champ texte au clic d'un bouton.
+
+> 💡 `ref`, c'est comme un post-it collé sur un élément HTML — tu peux interagir avec lui directement, sans passer par l'état React.
+
+---
+
+###  `CompteurRendu.js` — `useRef` (valeur persistante)
+
+`useRef` ne sert pas qu'au DOM. On peut aussi s'en servir pour stocker une valeur qui persiste entre les rendus **sans** provoquer de nouveau rendu quand elle change.
+
+> 💡 C'est la grande différence avec `useState` : modifier un `ref` est silencieux pour React.
+
+---
+
+###  `useFetch.js` — Hook personnalisé
+
+Un hook personnalisé, c'est juste une fonction qui commence par `use` et qui utilise d'autres hooks à l'intérieur. Ici on crée `useFetch` pour ne pas répéter la logique de fetch dans chaque composant.
+
+Il gère automatiquement :
+- l'état de chargement (`chargement`)
+- les données reçues (`data`)
+- les erreurs réseau (`erreur`)
+- l'annulation propre de la requête si le composant disparaît (`AbortController`)
+
+> 💡 C'est le principe DRY (Don't Repeat Yourself) appliqué aux hooks React.
+
+---
+
+### 📋 `ListeArticles.js` — Utilisation de `useFetch`
+
+Ce composant montre `useFetch` en action. Il récupère des articles depuis une API publique ([JSONPlaceholder](https://jsonplaceholder.typicode.com/)) et les affiche dans une liste scrollable avec gestion des états de chargement et d'erreur.
+
+---
+
+### ⏱️ `Timer.js` — `useEffect` avec nettoyage
+
+`setInterval` continue de tourner même si le composant est retiré de la page. C'est pour ça qu'on retourne une fonction de nettoyage dans `useEffect` — elle arrête le timer proprement.
+
+> 💡 Sans `clearInterval`, tu aurais des comportements bizarres et des fuites mémoire. Le nettoyage, c'est comme éteindre la lumière en quittant une pièce.
+
+---
+
+
+
+## 🧩 Exercices facultatifs réalisés
+
+- [x] Bouton **Reset** dans `Compteur.js`
+- [x] Bouton **Pause / Reprendre** dans `Timer.js`
+- [x] Bouton **Reset** dans `Timer.js`
+- [ ] Hook `useLocalStorage` *(non réalisé)*
+- [ ] Affichage de l'heure en temps réel *(non réalisé)*
+
+---
+
+## 📦 Dépendances
+
+Ce projet n'utilise que ce qui est fourni par `create-react-app` — aucune librairie supplémentaire.
+
+| Outil | Rôle |
+|---|---|
+| React 18 | Bibliothèque UI |
+| JSONPlaceholder | API publique gratuite pour les tests fetch |
+| create-react-app | Outil de démarrage du projet |
+
+---
+
+## 👤 Auteur
+
+Salma Laouy
+Étudiante en 3ème année —ENS MARRAKECH
+Année universitaire 2025-2026
+
+---
+
+> *Ce projet fait partie d'une série de TPs pratiques sur React.*
